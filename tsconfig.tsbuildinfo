@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/architecture.tsx","./src/components/building.tsx","./src/components/intro.tsx","./src/components/plans.tsx","./src/components/seismicinsights.tsx","./src/lib/model.ts","./src/lib/simulation.ts","./src/store/uselab.ts"],"version":"5.8.3"}

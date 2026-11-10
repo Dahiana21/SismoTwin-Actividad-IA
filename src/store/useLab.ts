@@ -3,7 +3,7 @@ import {defaultConfig,defaultSeismic,type Config,type Seismic} from '../lib/mode
 export type DecorKind='bed'|'sofa'|'table'|'chair'|'wall'|'plant'|'lamp';
 export type Finish='modern'|'brick'|'concrete'|'luxury';
 export type DecorItem={id:string;kind:DecorKind;floor:number;x:number;z:number;rotation:number;style:'natural'|'dark'|'color'};
-type Mode='build'|'architecture'|'seismic'|'compare'|'cost';
+type Mode='build'|'architecture'|'seismic'|'compare'|'cost'|'plans';
 type Saved={name:string;config:Config;variant:Config;seismic:Seismic;items?:DecorItem[];finish?:Finish};
 type State={project:string;config:Config;variant:Config;seismic:Seismic;mode:Mode;progress:number;playing:boolean;showB:boolean;view:'iso'|'front'|'top';selected:string|null;simFrame:number;simPlaying:boolean;saved:Record<string,Saved>;items:DecorItem[];finish:Finish;openFacade:boolean;visibleFloor:number;
  addItem:(kind:DecorKind,floor:number,style:DecorItem['style'])=>void;updateItem:(id:string,p:Partial<DecorItem>)=>void;removeItem:(id:string)=>void;setFinish:(f:Finish)=>void;setOpenFacade:(v:boolean)=>void;setVisibleFloor:(n:number)=>void;
