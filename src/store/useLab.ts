@@ -1,0 +1,18 @@
+import {create} from 'zustand';import {persist} from 'zustand/middleware';
+import {defaultConfig,defaultSeismic,type Config,type Seismic} from '../lib/model';
+export type DecorKind='bed'|'sofa'|'table'|'chair'|'wall'|'plant'|'lamp';
+export type Finish='modern'|'brick'|'concrete'|'luxury';
+export type DecorItem={id:string;kind:DecorKind;floor:number;x:number;z:number;rotation:number;style:'natural'|'dark'|'color'};
+type Mode='build'|'architecture'|'seismic'|'compare'|'cost';
+type Saved={name:string;config:Config;variant:Config;seismic:Seismic;items?:DecorItem[];finish?:Finish};
+type State={project:string;config:Config;variant:Config;seismic:Seismic;mode:Mode;progress:number;playing:boolean;showB:boolean;view:'iso'|'front'|'top';selected:string|null;simFrame:number;simPlaying:boolean;saved:Record<string,Saved>;items:DecorItem[];finish:Finish;openFacade:boolean;visibleFloor:number;
+ addItem:(kind:DecorKind,floor:number,style:DecorItem['style'])=>void;updateItem:(id:string,p:Partial<DecorItem>)=>void;removeItem:(id:string)=>void;setFinish:(f:Finish)=>void;setOpenFacade:(v:boolean)=>void;setVisibleFloor:(n:number)=>void;
+ setProject:(v:string)=>void;setConfig:(v:Partial<Config>)=>void;setVariant:(v:Partial<Config>)=>void;setSeismic:(v:Partial<Seismic>)=>void;setMode:(v:Mode)=>void;setProgress:(v:number)=>void;setPlaying:(v:boolean)=>void;setShowB:(v:boolean)=>void;setView:(v:'iso'|'front'|'top')=>void;setSelected:(v:string|null)=>void;setSimFrame:(v:number)=>void;setSimPlaying:(v:boolean)=>void;save:()=>void;open:(key:string)=>void;reset:()=>void};
+export const useLab=create<State>()(persist((set,get)=>({
+ project:'Torre Horizonte · Proyecto 01',config:defaultConfig,variant:{...defaultConfig,stiffness:1.6,structure:'arriostrada'},seismic:defaultSeismic,mode:'build',progress:1,playing:false,showB:false,view:'iso',selected:null,simFrame:0,simPlaying:false,saved:{},items:[],finish:'modern',openFacade:false,visibleFloor:0,
+ addItem:(kind,floor,style)=>set(s=>{const id=`D-${Date.now()}-${s.items.length}`;return {items:[...s.items,{id,kind,floor,x:0,z:0,rotation:0,style}],selected:id}}),updateItem:(id,p)=>set(s=>({items:s.items.map(i=>i.id===id?{...i,...p}:i)})),removeItem:id=>set(s=>({items:s.items.filter(i=>i.id!==id),selected:null})),setFinish:finish=>set({finish}),setOpenFacade:openFacade=>set({openFacade}),setVisibleFloor:visibleFloor=>set({visibleFloor}),
+ setProject:v=>set({project:v}),setConfig:v=>set(x=>({config:{...x.config,...v},simFrame:0})),setVariant:v=>set(x=>({variant:{...x.variant,...v},simFrame:0})),setSeismic:v=>set(x=>({seismic:{...x.seismic,...v},simFrame:0})),setMode:v=>set({mode:v,playing:false,simPlaying:false}),setProgress:v=>set({progress:v}),setPlaying:v=>set({playing:v}),setShowB:v=>set({showB:v}),setView:v=>set({view:v}),setSelected:v=>set({selected:v}),setSimFrame:v=>set({simFrame:v}),setSimPlaying:v=>set({simPlaying:v}),
+ save:()=>set(x=>({saved:{...x.saved,[x.project]:{name:x.project,config:{...x.config},variant:{...x.variant},seismic:{...x.seismic},items:x.items.map(i=>({...i})),finish:x.finish}}})),
+ open:key=>{const s=get().saved[key];if(s)set({project:s.name,config:s.config,variant:s.variant,seismic:s.seismic,items:s.items||[],finish:s.finish||'modern',simFrame:0})},
+ reset:()=>set({config:defaultConfig,variant:{...defaultConfig,stiffness:1.6,structure:'arriostrada'},seismic:defaultSeismic,progress:1,simFrame:0,items:[],finish:'modern'})
+ }),{name:'sismotwin-4d-v1',partialize:s=>({project:s.project,config:s.config,variant:s.variant,seismic:s.seismic,saved:s.saved,items:s.items,finish:s.finish,openFacade:s.openFacade,visibleFloor:s.visibleFloor})}));
